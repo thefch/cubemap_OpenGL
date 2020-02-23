@@ -20,7 +20,7 @@ public:
 
 	void create(std::string tex);
 	
-	void render(Shader* shader);
+	void render(Shader* shader, float x, float y, float z);
 
 	GLuint textureID;
 };

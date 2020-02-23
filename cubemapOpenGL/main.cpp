@@ -11,10 +11,10 @@ Shader* skyboxShader = new Shader();  ///shader object
 Shader* cubeShader = new Shader();  ///shader object 
 
 
-float speed = 0.1;
-float zdist = 0;
+
+float zdist = -135;
 float xdist = 0;
-float ydist = 0;
+float ydist = -17;
 
 using namespace std;
 
@@ -49,12 +49,12 @@ void init()
 	}							
 
 	vector<std::string> faces = {
-		"skybox/3/right.jpg",
-		"skybox/3/left.jpg",
-		"skybox/3/top.jpg",
-		"skybox/3/bottom.jpg",
-		"skybox/3/front.jpg",
-		"skybox/3/back.jpg"
+		"Textures/skybox/right.jpg",
+		"Textures/skybox/left.jpg",
+		"Textures/skybox/top.jpg",
+		"Textures/skybox/bottom.jpg",
+		"Textures/skybox/front.jpg",
+		"Textures/skybox/back.jpg"
 
 	};
 	skybox.create(faces);
@@ -64,7 +64,7 @@ void init()
 		cout << "failed to load shader" << endl;
 	}
 
-	cube.create("cube/wall.jpg");
+	cube.create("Textures/cube/wall.jpg");
 	cube.textureID = skybox.textureID;
 
 	glEnable(GL_DEPTH_TEST);
@@ -87,9 +87,9 @@ void display()
 	
 	matLocConf(skyboxShader);
 	skybox.renderCubeMap(skyboxShader);
-	
+
 	matLocConf(cubeShader);
-	cube.render(cubeShader);
+	cube.render(cubeShader,xdist,ydist,zdist);
 
 	glFlush();
 }
@@ -104,27 +104,6 @@ void matLocConf(Shader* shader) {
 void keyboard()
 {
 	float incr = 0.5;
-
-	if (keys[VK_LEFT])
-	{
-		speed+=0.01f;
-		keys[VK_RIGHT] = false;
-	}
-	if (keys[VK_RIGHT])
-	{
-		speed-=0.01f;
-		keys[VK_RIGHT] = false;
-	}
-	if (keys[VK_UP])
-	{
-		speed-=0.01f;
-		keys[VK_UP] = false;
-	}
-	if (keys[VK_DOWN])
-	{
-		speed+=0.01f;
-		keys[VK_DOWN] = false;
-	}
 
 	if (keys['W'])
 	{

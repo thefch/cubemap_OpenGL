@@ -25,16 +25,6 @@ void CubeMap::createCubemapGeometry()
 	verts[18] = dim;   verts[19] = dim;  verts[20] = dim;
 	verts[21] = dim;   verts[22] = -dim;  verts[23] = dim;
 
-	/*cols[0] = 0.0f;   cols[ 1] = 0.0f;  cols[ 2] = 0.0f;
-	cols[3] = 0.0f;   cols[ 4] = 1.0f;  cols[ 5] = 0.0f;
-	cols[6] = 0.0f;   cols[ 7] = 0.0f;  cols[ 8] = 1.0f;
-	cols[9] = 1.0f;   cols[10] = 1.0f;  cols[11] = 1.0f;
-
-	cols[12] = 1.0f;   cols[13] = 0.0f;  cols[14] = 0.0f;
-	cols[15] = 0.0f;   cols[16] = 1.0f;  cols[17] = 0.0f;
-	cols[18] = 0.0f;   cols[19] = 0.0f;  cols[20] = 1.0f;
-	cols[21] = 1.0f;   cols[22] = 1.0f;  cols[23] = 0.0f;*/
-
 	tris[0] = 0; tris[1] = 1; tris[2] = 2;
 	tris[3] = 0; tris[4] = 2; tris[5] = 3;
 	tris[6] = 4; tris[7] = 6; tris[8] = 5;
@@ -74,6 +64,8 @@ void CubeMap::createCubemapGeometry()
 	cout << "CubeMap Geometry created" << endl;
 }
 
+
+//load textures for the skybox
 void CubeMap::loadCubeMapTextures(vector<std::string> faces) {
 	GLenum axis[6] = {
 		GL_TEXTURE_CUBE_MAP_POSITIVE_X , GL_TEXTURE_CUBE_MAP_NEGATIVE_X ,
@@ -109,22 +101,26 @@ void CubeMap::loadCubeMapTextures(vector<std::string> faces) {
 	this->textureID = texID;
 }
 
+// call to create a cubemap
+// faces: path for image faces to load
 void CubeMap::create(std::vector<std::string> faces) {
 	this->createCubemapGeometry();
 	this->loadCubeMapTextures(faces);
 }
 
+// render the cube map
 void CubeMap::renderCubeMap(Shader* shader) {
 	glDepthMask(GL_FALSE);
-	//ModelViewMatrix = glm::mat4(1.0);
-	ModelViewMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0, -5.0));	//viewing is simple translate
-	//ModelViewMatrix = glm::rotate(ModelViewMatrix, cubemap_spin, glm::vec3(0, 1, 0)); //rotation about y axis
+	
+	ModelViewMatrix = glm::mat4(1.0);
+	ModelViewMatrix = glm::translate(ModelViewMatrix, glm::vec3(0.0, 0.0, -5.0));
 
 	glUniformMatrix4fv(glGetUniformLocation(shader->handle(), "ModelViewMatrix"), 1, GL_FALSE, &ModelViewMatrix[0][0]);
 
 	glm::mat3 normalMatrix = glm::inverseTranspose(glm::mat3(ModelViewMatrix));
 	glUniformMatrix3fv(glGetUniformLocation(shader->handle(), "NormalMatrix"), 1, GL_FALSE, &normalMatrix[0][0]);
 
+	//bind texture
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 	glBindVertexArray(cubemapVAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_cubemap);
